@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Explorador de ventas · King County</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="portada">
+  <div class="contenedor">
+    <div class="antetitulo">Mercado inmobiliario de King County · mayo 2014 – mayo 2015</div>
+    <h1>Qué se vendió, dónde y a qué precio</h1>
+    <p>21.597 ventas de viviendas procesadas en el modelo estrella del proyecto. Los filtros de la barra superior afectan a toda la página; cada cifra se recalcula en el navegador al momento.</p>
+  </div>
+</header>
+
+<div class="filtros" id="filtros">
+  <div class="contenedor">
+    <div class="filtros-cabecera">
+      <div class="conteo" aria-live="polite"><strong id="conteo" class="num">21.597</strong> de <span id="conteo-total" class="num">21.597</span> ventas<span class="largo"> seleccionadas</span></div>
+      <div class="acciones">
+        <button type="button" class="boton-filtros" id="boton-filtros" aria-expanded="false" aria-controls="controles">Filtros</button>
+        <button type="button" id="limpiar">Limpiar<span class="largo"> filtros</span></button>
+      </div>
+    </div>
+    <div class="controles" id="controles">
+      <label class="campo"><span>Segmento de precio</span><select id="f-seg"></select></label>
+      <label class="campo"><span>Tipo de vivienda</span><select id="f-tipo"></select></label>
+      <label class="campo"><span>Ciudad</span><select id="f-ciudad"></select></label>
+      <label class="campo"><span>Frente al agua</span>
+        <select id="f-agua">
+          <option value="-1">Todas</option>
+          <option value="1">Solo con frente al agua</option>
+          <option value="0">Solo sin frente al agua</option>
+        </select>
+      </label>
+      <div class="campo"><span>Precio (USD)</span>
+        <div class="rango">
+          <input type="number" id="f-pmin" min="0" step="10000" placeholder="mín." aria-label="Precio mínimo">
+          <i>a</i>
+          <input type="number" id="f-pmax" min="0" step="10000" placeholder="máx." aria-label="Precio máximo">
+        </div>
+      </div>
+      <div class="campo rango-anio"><span>Año de construcción</span>
+        <div class="rango">
+          <input type="number" id="f-amin" step="1" aria-label="Año mínimo">
+          <i>a</i>
+          <input type="number" id="f-amax" step="1" aria-label="Año máximo">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="contenedor">
+    <section class="seccion" id="explorador">
+      <div class="seccion-cabecera">
+        <h2><span class="kicker">01 · Explorador</span>Comparar grupos</h2>
+        <p>Elige una medida y una forma de agrupar las ventas. El precio por m² es ponderado: la suma de los precios dividida entre la suma de los metros construidos del grupo.</p>
+      </div>
+
+      <div class="cifras">
+        <div class="cifra"><span>Ventas</span><strong class="num" id="k-n">—</strong></div>
+        <div class="cifra"><span>Precio promedio</span><strong class="num" id="k-prom">—</strong></div>
+        <div class="cifra"><span>Precio mediano</span><strong class="num" id="k-med">—</strong></div>
+        <div class="cifra"><span>Precio por m²</span><strong class="num" id="k-pm2">—</strong></div>
+      </div>
+
+      <div class="mandos">
+        <label class="campo"><span>Medida</span>
+          <select id="e-medida">
+            <option value="prom">Precio promedio</option>
+            <option value="med">Precio mediano</option>
+            <option value="pm2">Precio por m²</option>
+            <option value="area">Área promedio (m²)</option>
+            <option value="n">Número de ventas</option>
+            <option value="pct">% del total</option>
+          </select>
+        </label>
+        <label class="campo"><span>Agrupar por</span>
+          <select id="e-grupo">
+            <option value="zona">Zona</option>
+            <option value="ciudad">Ciudad</option>
+            <option value="tipo">Tipo de vivienda</option>
+            <option value="seg">Segmento de precio</option>
+            <option value="decada">Década de construcción</option>
+            <option value="hab">Habitaciones</option>
+            <option value="banos">Baños</option>
+            <option value="calidad">Calidad</option>
+            <option value="vista">Nivel de vista</option>
+            <option value="agua">Frente al agua</option>
+            <option value="sotano">Sótano</option>
+            <option value="renov">Renovada</option>
+            <option value="mes">Mes de venta</option>
+          </select>
+        </label>
+        <label class="campo"><span>Gráfico</span>
+          <select id="e-grafico">
+            <option value="barras">Barras horizontales</option>
+            <option value="columnas">Columnas</option>
+            <option value="linea">Línea</option>
+            <option value="tabla">Tabla</option>
+          </select>
+        </label>
+        <div class="secundarios">
+          <label class="campo"><span>Orden</span>
+            <select id="e-orden">
+              <option value="desc">Valor descendente</option>
+              <option value="asc">Valor ascendente</option>
+              <option value="cat">Por categoría</option>
+            </select>
+          </label>
+          <label class="campo"><span>Mostrar</span>
+            <select id="e-top">
+              <option value="0">Todas</option>
+              <option value="10">Top 10</option>
+              <option value="15" selected>Top 15</option>
+              <option value="20">Top 20</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <div class="grafico" id="grafico"></div>
+      <div class="nota-tabla"><span id="nota-grupos"></span><span id="nota-tiempo"></span></div>
+      <div class="tabla-envoltura" id="tabla-envoltura"><table id="tabla"></table></div>
+    </section>
+  </div>
+
+  <div class="banda-oscura">
+    <div class="contenedor">
+      <section class="seccion" id="mapa-seccion">
+        <div class="seccion-cabecera">
+          <h2><span class="kicker">02 · Mapa</span>Cada punto, una venta</h2>
+          <p>Posición por latitud y longitud, coloreada por segmento de precio de frío a cálido. Pasa el cursor sobre un punto para ver el detalle.</p>
+        </div>
+        <div class="leyenda" id="leyenda"></div>
+        <div class="mapa-marco" id="mapa-marco">
+          <canvas id="mapa" aria-label="Mapa de ventas filtradas"></canvas>
+          <div class="anillo" id="anillo"></div>
+          <div class="tip" id="tip-mapa"></div>
+          <div class="vacio-lienzo" id="vacio-mapa" role="status" hidden><span></span></div>
+        </div>
+        <div class="aviso-mapa" id="aviso-mapa"></div>
+      </section>
+    </div>
+  </div>
+
+  <div class="contenedor">
+    <section class="seccion" id="superficie">
+      <div class="seccion-cabecera">
+        <h2><span class="kicker">03 · Superficie, precio y simulador</span>Cuánto pesa el tamaño</h2>
+        <p>A la izquierda, la relación entre metros construidos y precio en las ventas filtradas. A la derecha, una estimación con el modelo de regresión lineal múltiple del proyecto.</p>
+      </div>
+      <div class="dos-columnas">
+        <div>
+          <h3>m² construidos frente a precio</h3>
+          <p class="sub">Un punto por venta, con la recta de mínimos cuadrados.</p>
+          <div class="lienzo-marco">
+            <canvas id="dispersion" aria-label="Dispersión de metros construidos contra precio"></canvas>
+            <div class="vacio-lienzo" id="vacio-dispersion" role="status" hidden><span></span></div>
+          </div>
+          <div class="estadisticos">
+            <div>Correlación<strong class="num" id="s-r">—</strong></div>
+            <div>Por cada m² adicional<strong class="num" id="s-pend">—</strong></div>
+            <div>Ventas en el gráfico<strong class="num" id="s-n">—</strong></div>
+          </div>
+        </div>
+        <div class="simulador">
+          <h3>Simulador de precio</h3>
+          <p class="sub">No depende de los filtros: aplica siempre la misma ecuación.</p>
+          <div class="deslizador">
+            <label for="m-sup">Superficie construida <output id="o-sup" class="num"></output></label>
+            <input type="range" id="m-sup" min="30" max="600" step="1" value="180">
+          </div>
+          <div class="deslizador">
+            <label for="m-cal">Calidad (grade) <output id="o-cal"></output></label>
+            <input type="range" id="m-cal" min="1" max="13" step="1" value="7">
+          </div>
+          <div class="deslizador">
+            <label for="m-vis">Nivel de vista <output id="o-vis"></output></label>
+            <input type="range" id="m-vis" min="0" max="4" step="1" value="0">
+          </div>
+          <div class="deslizador">
+            <label for="m-agua">Frente al agua <output id="o-agua"></output></label>
+            <input type="range" id="m-agua" min="0" max="1" step="1" value="0">
+          </div>
+          <div class="resultado">
+            <span>Precio estimado</span>
+            <strong id="m-precio">—</strong>
+            <p>R² del modelo: <b>0,589</b>. Explica algo menos del 60 % de la variación del precio.</p>
+            <p id="m-aviso">Al ser un modelo lineal, en combinaciones extremas (poca superficie y calidad baja) la estimación puede resultar negativa, lo que no tiene sentido económico.</p>
+            <div class="formula">precio = −552.590,14
+       + 1.782,2041 × superficie_m2
+       + 94.984,8375 × calidad
+       + 590.262,6690 × frente_al_agua
+       + 70.463,2666 × nivel_vista</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="contenedor">
+    <span>Fuente: House Sales in King County, USA. Datos limpios de data/processed.</span>
+    <span>Página autocontenida, funciona sin conexión.</span>
+  </div>
+</footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
